@@ -635,7 +635,9 @@ namespace AvalonDock.Controls
 			var parentDocumentPane = layoutElement.Parent as LayoutDocumentPane;
 			var indexOfParentPane = parentDocumentGroup.IndexOfChild(parentDocumentPane);
 			var nextDocumentPane = parentDocumentGroup.Children[indexOfParentPane + 1] as LayoutDocumentPane;
-			nextDocumentPane.InsertChildAt(0, layoutElement);
+			// Insert at end to preserve intuitive order and keep visual selection position
+			nextDocumentPane.InsertChildAt(nextDocumentPane.ChildrenCount, layoutElement);
+			layoutElement.IsSelected = true;
 			layoutElement.IsActive = true;
 			layoutElement.Root.CollectGarbage();
 		}
@@ -682,7 +684,9 @@ namespace AvalonDock.Controls
 			var parentDocumentPane = layoutElement.Parent as LayoutDocumentPane;
 			var indexOfParentPane = parentDocumentGroup.IndexOfChild(parentDocumentPane);
 			var nextDocumentPane = parentDocumentGroup.Children[indexOfParentPane - 1] as LayoutDocumentPane;
-			nextDocumentPane.InsertChildAt(0, layoutElement);
+			// Insert at end to preserve intuitive order and keep visual selection position
+			nextDocumentPane.InsertChildAt(nextDocumentPane.ChildrenCount, layoutElement);
+			layoutElement.IsSelected = true;
 			layoutElement.IsActive = true;
 			layoutElement.Root.CollectGarbage();
 		}
