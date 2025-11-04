@@ -215,6 +215,8 @@
 						Value="{x:Null}" />
 		<Setter Property="Background"
 						Value="{DynamicResource {x:Static reskeys:ResourceKeys.TabBackground}}" />
+		<Setter Property="AlternationCount"
+					Value="1000" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type avalonDockControls:LayoutDocumentPaneControl}">
@@ -228,7 +230,7 @@
 						<!--  Following border is required to catch mouse events  -->
 						<Border Grid.RowSpan="2"
 										Background="Transparent" />
-						<Grid Margin="0,0"
+						<Grid Margin="-1,0"
 									Grid.Row="0"
 									Panel.ZIndex="1"
 									Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type avalonDockControls:LayoutDocumentPaneControl}}, Path=Model.ShowHeader, Converter={avalonDockConverters:BoolToVisibilityConverter}}">
@@ -270,6 +272,7 @@
 						<Border x:Name="ContentPanel"
 										Grid.Row="1"
 										Grid.Column="0"
+										Margin="0,0,0,0"
 										HorizontalAlignment="Stretch"
 										VerticalAlignment="Stretch"
 										Background="{TemplateBinding Background}"
@@ -406,9 +409,9 @@
 									<!-- Selected indicator border (visible when selected) -->
 									<!-- Mask to hide the header underline (BD) just under the selected tab while keeping tab fill visually transparent -->
 									<Border x:Name="SelectedMask"
-													Height="2"
+													Height="1"
 													VerticalAlignment="Bottom"
-													Margin="0,0,0,0"
+													Margin="-2,0,-2,0"
 													Background="{DynamicResource {x:Static reskeys:ResourceKeys.TabBackground}}"
 													CornerRadius="4,4,0,0"
 													Visibility="Collapsed" />
@@ -417,30 +420,74 @@
 									<Border x:Name="Indicator"
 													Margin="0,0,0,2"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
-													BorderThickness="1,1,1,0"
-													CornerRadius="4,4,0,0"
+													BorderThickness="0,0,0,0"
+													CornerRadius="8,8,0,0"
 													Visibility="Collapsed" />
+
 
 									<!-- Left and right corner radius decorations (visible when selected) -->
 									<Border x:Name="LeftRadius"
-													Width="3"
-													Height="3"
-													Margin="-2,0,0,0"
+													Width="12"
+													Height="16"
+													Margin="-10,0,0,0"
 													VerticalAlignment="Bottom"
 													HorizontalAlignment="Left"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
 													BorderThickness="0,0,1,1"
-													CornerRadius="0,0,6,0"
-													Visibility="Collapsed" />
+									Visibility="Collapsed">
+									<Border.Style>
+										<Style TargetType="Border">
+											<Setter Property="CornerRadius" Value="6,0,6,0" />
+											<Style.Triggers>
+												<MultiDataTrigger>
+													<MultiDataTrigger.Conditions>
+														<Condition Value="True">
+															<Condition.Binding>
+																<Binding Path="IsSelected" RelativeSource="{RelativeSource AncestorType=TabItem}" />
+															</Condition.Binding>
+														</Condition>
+														<Condition Value="0">
+															<Condition.Binding>
+																<Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource AncestorType=TabItem}" />
+															</Condition.Binding>
+														</Condition>
+													</MultiDataTrigger.Conditions>
+													<Setter Property="CornerRadius" Value="6,0,0,0" />
+												</MultiDataTrigger>
+											</Style.Triggers>
+										</Style>
+									</Border.Style>
+								</Border>
 									<Border x:Name="RightRadius"
-													Width="5.5"
-													Height="2"
-													Margin="0,0,-4,0"
+													Width="12"
+													Height="16"
+													Margin="0,0,-10,0"
 													VerticalAlignment="Bottom"
 													HorizontalAlignment="Right"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
 													BorderThickness="1,0,0,1"
-													CornerRadius="0,0,0,6"
+													CornerRadius="0,0,0,5"
+													Visibility="Collapsed" />
+									<!-- Added top corner radius decorations to complete 4 corners -->
+									<Border x:Name="TopRightRadius"
+													Width="100"
+													Height="19"
+													Margin="0,0,1,0"
+													VerticalAlignment="Top"
+													HorizontalAlignment="Right"
+													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+													BorderThickness="0,1,1,0"
+													CornerRadius="0,5,0,0"
+													Visibility="Collapsed" />
+									<Border x:Name="TopLeftRadius"
+													Width="100"
+													Height="19"
+													Margin="1,0,0,0"
+													VerticalAlignment="Top"
+													HorizontalAlignment="Left"
+													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+													BorderThickness="1,1,0,0"
+													CornerRadius="4,0,0,0"
 													Visibility="Collapsed" />
 								</Grid>
 								<ControlTemplate.Triggers>
@@ -455,6 +502,12 @@
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 										<Setter TargetName="RightRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="TopLeftRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="TopRightRadius"
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 										<Setter TargetName="SelectedMask"
@@ -475,6 +528,12 @@
 														Property="Visibility"
 														Value="Visible" />
 										<Setter TargetName="RightRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="TopLeftRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="TopRightRadius"
 														Property="Visibility"
 														Value="Visible" />
 									</Trigger>
@@ -498,6 +557,12 @@
 										<Setter TargetName="RightRadius"
 														Property="BorderBrush"
 														Value="#9184EE" />
+										<Setter TargetName="TopLeftRadius"
+														Property="BorderBrush"
+														Value="#9184EE" />
+										<Setter TargetName="TopRightRadius"
+														Property="BorderBrush"
+														Value="#9184EE" />
 										<Setter TargetName="SelectedMask"
 														Property="Visibility"
 														Value="Visible" />
@@ -511,6 +576,12 @@
 														Property="Visibility"
 														Value="Visible" />
 										<Setter TargetName="RightRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="TopLeftRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="TopRightRadius"
 														Property="Visibility"
 														Value="Visible" />
 									</DataTrigger>
@@ -747,6 +818,26 @@
 													BorderThickness="1,1,0,0"
 													CornerRadius="4,0,0,0"
 													Visibility="Collapsed" />
+									<Border x:Name="BottomLeftRadius"
+													Width="8"
+													Height="8"
+													Margin="-7,0,0,-1"
+													VerticalAlignment="Bottom"
+													HorizontalAlignment="Left"
+													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+													BorderThickness="1,0,0,1"
+													CornerRadius="0,0,0,4"
+													Visibility="Collapsed" />
+									<Border x:Name="BottomRightRadius"
+													Width="8"
+													Height="8"
+													Margin="0,0,-7,-1"
+													VerticalAlignment="Bottom"
+													HorizontalAlignment="Right"
+													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+													BorderThickness="0,0,1,1"
+													CornerRadius="0,0,4,0"
+													Visibility="Collapsed" />
 								</Grid>
 								<ControlTemplate.Triggers>
 									<Trigger Property="Selector.IsSelected"
@@ -760,6 +851,12 @@
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 										<Setter TargetName="RightRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="BottomLeftRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="BottomRightRadius"
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 										<Setter TargetName="SelectedMask"
@@ -781,6 +878,12 @@
 														Property="Visibility"
 														Value="Visible" />
 										<Setter TargetName="RightRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="BottomLeftRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="BottomRightRadius"
 														Property="Visibility"
 														Value="Visible" />
 									</Trigger>
@@ -809,6 +912,12 @@
 										<Setter TargetName="RightRadius"
 														Property="BorderBrush"
 														Value="#9184EE" />
+										<Setter TargetName="BottomLeftRadius"
+														Property="BorderBrush"
+														Value="#9184EE" />
+										<Setter TargetName="BottomRightRadius"
+														Property="BorderBrush"
+														Value="#9184EE" />
 										<Setter TargetName="SelectedMask"
 														Property="Visibility"
 														Value="Visible" />
@@ -825,6 +934,12 @@
 														Property="Visibility"
 														Value="Visible" />
 										<Setter TargetName="RightRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="BottomLeftRadius"
+														Property="Visibility"
+														Value="Visible" />
+										<Setter TargetName="BottomRightRadius"
 														Property="Visibility"
 														Value="Visible" />
 									</MultiDataTrigger>
@@ -852,6 +967,12 @@
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 										<Setter TargetName="RightRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="BottomLeftRadius"
+														Property="BorderBrush"
+														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
+										<Setter TargetName="BottomRightRadius"
 														Property="BorderBrush"
 														Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 									</MultiDataTrigger>
