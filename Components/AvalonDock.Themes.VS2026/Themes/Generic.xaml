@@ -678,46 +678,60 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type avalonDockControls:LayoutAnchorablePaneControl}">
-					<Grid ClipToBounds="true"
-								KeyboardNavigation.TabNavigation="Local"
-								SnapsToDevicePixels="true">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<!--  Following border is required to catch mouse events  -->
-						<Border Grid.RowSpan="2"
-										Background="Transparent" />
-						<Border x:Name="ContentPanel"
-										Grid.Row="0"
-										Grid.Column="0"
-										Margin="0"
-										CornerRadius="0,0,0,0"
-										Background="{TemplateBinding Background}"
-										BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
-										BorderThickness="1"
-										KeyboardNavigation.DirectionalNavigation="Contained"
-										KeyboardNavigation.TabIndex="2"
-										KeyboardNavigation.TabNavigation="Cycle">
-							<ContentPresenter x:Name="PART_SelectedContentHost"
-																Margin="{TemplateBinding Padding}"
-																ContentSource="SelectedContent"
-																SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-						</Border>
-						<avalonDockControls:AnchorablePaneTabPanel x:Name="HeaderPanel"
-																											 Grid.Row="1"
-																											 Margin="0"
-																											 Panel.ZIndex="1"
-																											 IsItemsHost="true"
-																											 KeyboardNavigation.TabIndex="1" />
-					</Grid>
+					<Border x:Name="OuterBorder"
+									CornerRadius="4"
+									BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+									BorderThickness="0"
+									Background="{TemplateBinding Background}"
+									ClipToBounds="True"
+									SnapsToDevicePixels="True"
+									UseLayoutRounding="True">
+						<Grid ClipToBounds="true"
+									KeyboardNavigation.TabNavigation="Local"
+									SnapsToDevicePixels="true"
+									UseLayoutRounding="True">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<!--  Following border is required to catch mouse events  -->
+							<Border Grid.RowSpan="2"
+											Background="Transparent"
+											IsHitTestVisible="True" />
+							<Border x:Name="ContentPanel"
+											Grid.Row="0"
+											Grid.Column="0"
+											Margin="0"
+											CornerRadius="4,4,0,0"
+											Background="Transparent"
+											BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
+											BorderThickness="1"
+											ClipToBounds="True"
+											SnapsToDevicePixels="True"
+											UseLayoutRounding="True"
+											KeyboardNavigation.DirectionalNavigation="Contained"
+											KeyboardNavigation.TabIndex="2"
+											KeyboardNavigation.TabNavigation="Cycle">
+								<ContentPresenter x:Name="PART_SelectedContentHost"
+																	Margin="{TemplateBinding Padding}"
+																	ContentSource="SelectedContent"
+																	SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+							</Border>
+							<avalonDockControls:AnchorablePaneTabPanel x:Name="HeaderPanel"
+																												 Grid.Row="1"
+																												 Margin="0"
+																												 Panel.ZIndex="1"
+																												 IsItemsHost="true"
+																												 KeyboardNavigation.TabIndex="1" />
+						</Grid>
+					</Border>
 					<ControlTemplate.Triggers>
 						<MultiDataTrigger>
 							<MultiDataTrigger.Conditions>
 								<Condition Binding="{Binding SelectedItem.IsActive, RelativeSource={RelativeSource Self}}"
 													 Value="False" />
 							</MultiDataTrigger.Conditions>
-							<Setter TargetName="ContentPanel"
+							<Setter TargetName="OuterBorder"
 											Property="BorderBrush"
 											Value="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}" />
 						</MultiDataTrigger>
@@ -728,12 +742,22 @@
 											Property="BorderBrush"
 											Value="#9184EE" />
 						</DataTrigger>
+						
+						<DataTrigger Binding="{Binding SelectedItem.IsActive, RelativeSource={RelativeSource Self}}"
+												 Value="True">
+							<Setter TargetName="OuterBorder"
+											Property="BorderBrush"
+											Value="#9184EE" />
+						</DataTrigger>
 
 						<DataTrigger Binding="{Binding Items.Count, RelativeSource={RelativeSource Self}}"
 												 Value="1">
+							<Setter TargetName="OuterBorder"
+											Property="CornerRadius"
+											Value="4,4,4,4" />
 							<Setter TargetName="ContentPanel"
 											Property="CornerRadius"
-											Value="0" />
+											Value="4,4,4,4" />
 						</DataTrigger>
 
 						<Trigger Property="IsEnabled"
@@ -803,7 +827,7 @@
 									<Border x:Name="Indicator"
 													Margin="0,2,0,0"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
-													BorderThickness="0"
+													BorderThickness="1,0,1,1"
 													CornerRadius="0,0,6,6"
 													Visibility="Collapsed" />
 
@@ -856,26 +880,32 @@
 													BorderThickness="1,1,0,0"
 													CornerRadius="4,0,0,0"
 													Visibility="Collapsed" />
-									<Border x:Name="BottomLeftRadius"
-													Width="48"
-													Height="28"
-													Margin="0,0,0,0"
+							<Border x:Name="BottomLeftRadius"
+										Width="0"
+										Height="0"
+										Margin="0,0,-2,0"
 													VerticalAlignment="Bottom"
 													HorizontalAlignment="Left"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
 													BorderThickness="1,0,0,1"
 													CornerRadius="0,0,0,4"
-													Visibility="Collapsed" />
+										Panel.ZIndex="2"
+										SnapsToDevicePixels="True"
+										UseLayoutRounding="True"
+										Visibility="Collapsed" />
 									<Border x:Name="BottomRightRadius"
-													Width="48"
-													Height="28"
-													Margin="0,0,0,0"
+										Width="0"
+										Height="0"
+										Margin="-2,0,0,0"
 													VerticalAlignment="Bottom"
 													HorizontalAlignment="Right"
 													BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
 													BorderThickness="0,0,1,1"
 													CornerRadius="0,0,4,0"
-													Visibility="Collapsed" />
+										Panel.ZIndex="2"
+										SnapsToDevicePixels="True"
+										UseLayoutRounding="True"
+										Visibility="Collapsed" />
 								</Grid>
 								<ControlTemplate.Triggers>
 									<Trigger Property="Selector.IsSelected"
@@ -1109,9 +1139,11 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<Border Background="{TemplateBinding Background}"
+					<Border Background="Transparent"
 									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="{TemplateBinding BorderThickness}">
+									BorderThickness="{TemplateBinding BorderThickness}"
+									CornerRadius="4,4,0,0"
+									ClipToBounds="True">
 						<Grid Margin="2,2,3,3">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
@@ -1125,7 +1157,7 @@
 							<DockPanel>
 								<Border Padding="2,0,4,0"
 												HorizontalAlignment="Left"
-												Background="{TemplateBinding Background}">
+												Background="Transparent">
 									<avalonDockControls:DropDownControlArea
 											DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
 																													DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
@@ -2488,14 +2520,17 @@
 				<ControlTemplate TargetType="{x:Type avalonDockControls:LayoutAnchorableControl}">
 					<Border x:Name="Bd"
 									Background="{TemplateBinding Background}"
-									BorderBrush="{DynamicResource {x:Static reskeys:ResourceKeys.PanelBorderBrush}}"
-									BorderThickness="1,0,1,1">
+									BorderBrush="Transparent"
+									BorderThickness="0"
+									CornerRadius="0">
 						<Grid>
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
 							</Grid.RowDefinitions>
-							<Border x:Name="Header">
+							<Border x:Name="Header"
+											CornerRadius="4,4,0,0"
+											ClipToBounds="True">
 								<avalonDockControls:AnchorablePaneTitle Model="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" />
 							</Border>
 							<!--
@@ -2549,6 +2584,7 @@
 						</MultiDataTrigger>
 
 						<!-- Correct BorderThickness for all types of layouts LayoutAnchorableControls -->
+						<!-- When docked, border is handled by OuterBorder in LayoutAnchorablePaneControl, so no border needed here -->
 						<MultiDataTrigger>
 							<MultiDataTrigger.Conditions>
 								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.IsFloating}"
@@ -2556,7 +2592,10 @@
 							</MultiDataTrigger.Conditions>
 							<Setter TargetName="Bd"
 											Property="BorderThickness"
-											Value="1" />
+											Value="0" />
+							<Setter TargetName="Bd"
+											Property="BorderBrush"
+											Value="Transparent" />
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -2566,7 +2605,10 @@
 							</MultiDataTrigger.Conditions>
 							<Setter TargetName="Bd"
 											Property="BorderThickness"
-											Value="1" />
+											Value="0" />
+							<Setter TargetName="Bd"
+											Property="BorderBrush"
+											Value="Transparent" />
 						</MultiDataTrigger>
 
 						<MultiDataTrigger>
@@ -2943,7 +2985,7 @@
 		<Setter Property="shell:WindowChrome.WindowChrome">
 			<Setter.Value>
 				<shell:WindowChrome CaptionHeight="21"
-														CornerRadius="0"
+														CornerRadius="4"
 														GlassFrameThickness="0"
 														ResizeBorderThickness="10" />
 			</Setter.Value>
@@ -2955,7 +2997,9 @@
 						<Border x:Name="WindowBorder"
 										Background="{TemplateBinding Background}"
 										BorderBrush="{TemplateBinding BorderBrush}"
-										BorderThickness="1">
+										BorderThickness="1"
+										CornerRadius="4"
+										ClipToBounds="True">
 							<Grid>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto"
@@ -3130,6 +3174,9 @@
 											Value="8" />
 							<Setter TargetName="WindowBorder"
 											Property="BorderThickness"
+											Value="0" />
+							<Setter TargetName="WindowBorder"
+											Property="CornerRadius"
 											Value="0" />
 						</Trigger>
 						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.SinglePane.SelectedContent.IsActive}"
